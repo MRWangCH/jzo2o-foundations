@@ -2,6 +2,22 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jzo2o.foundations.mapper.ServeMapper">
 
-
-
+    <select id="queryServeListByRegionId" resultType="com.jzo2o.foundations.model.dto.response.ServeResDTO">
+        SELECT st.id   serve_type_id,
+               st.NAME serve_type_name,
+               si.id   serve_item_id,
+               si.NAME serve_item_name,
+               s.update_time,
+               s.sale_status,
+               si.reference_price,
+               s.create_time,
+               s.region_id,
+               s.price,
+               s.id,
+               s.is_hot
+        FROM serve s
+                 INNER JOIN serve_item si ON s.serve_item_id = si.id
+                 INNER JOIN serve_type st ON si.serve_type_id = st.id
+        WHERE region_id = #{regionId}
+    </select>
 </mapper>
