@@ -8,6 +8,7 @@ import com.jzo2o.foundations.model.dto.request.ServePageQueryReqDTO;
 import com.jzo2o.foundations.model.dto.request.ServeUpsertReqDTO;
 import com.jzo2o.foundations.model.dto.response.ServeResDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -33,4 +34,12 @@ public interface IServeService extends IService<Serve> {
      * @param serveUpsertReqDTOList
      */
     void batchAdd(List<ServeUpsertReqDTO> serveUpsertReqDTOList);
+
+    /**
+     * 修改区域服务价格
+     * @param id
+     * @param price
+     * @return
+     */
+    Serve update(Long id, BigDecimal price);
 }

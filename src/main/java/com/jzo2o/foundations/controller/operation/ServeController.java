@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 /**
@@ -37,4 +38,11 @@ public class ServeController {
     public void add(@RequestBody List<ServeUpsertReqDTO> serveUpsertReqDTOList) {
         serveService.batchAdd(serveUpsertReqDTOList);
     }
+
+    @ApiOperation("修改区域服务价格")
+    @PutMapping("/{id}")
+    public void update(@PathVariable("id") Long id, BigDecimal price) {
+        serveService.update(id, price);
+    }
+
 }
