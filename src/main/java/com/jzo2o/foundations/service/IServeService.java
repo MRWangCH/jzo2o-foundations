@@ -49,4 +49,16 @@ public interface IServeService extends IService<Serve> {
      * @return
      */
     Serve onSale(Long id);
+
+    /**
+     * 区域服务的下架
+     * @param id
+     */
+    Serve offSale(Long id);
+
+    /**
+     * 区域服务删除
+     * @param id
+     */
+    void delete(Long id);
 }

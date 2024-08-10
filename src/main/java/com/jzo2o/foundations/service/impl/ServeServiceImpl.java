@@ -1,6 +1,7 @@
 package com.jzo2o.foundations.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jzo2o.common.expcetions.CommonException;
 import com.jzo2o.common.expcetions.ForbiddenOperationException;
@@ -40,6 +41,9 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
 
     @Resource
     private RegionMapper regionMapper;
+
+    @Resource
+    private ServeMapper serveMapper;
 
     /**
      * 区域服务分页查询分页
@@ -133,5 +137,53 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
         }
         Serve selectById = baseMapper.selectById(id);
         return selectById;
+    }
+
+    /**
+     * 区域服务的下架
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Serve offSale(Long id) {
+        //查询serve信息
+        Serve serve = baseMapper.selectById(id);
+        if (ObjectUtil.isNull(serve)) {
+            throw new ForbiddenOperationException("不存在该区域服务");
+        }
+        //serve的sale_status是2可以下架
+        Integer status = serve.getSaleStatus();
+        if (status != FoundationStatusEnum.ENABLE.getStatus()) {
+            throw new ForbiddenOperationException("区域服务的状态是上架时才能下架");
+        }
+        LambdaQueryWrapper<Serve> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Serve::getId, id);
+        serve.setSaleStatus(FoundationStatusEnum.ENABLE.getStatus());
+        serveMapper.update(serve, queryWrapper);
+        Serve serve1 = baseMapper.selectById(id);
+        return serve1;
+    }
+
+    /**
+     * 区域服务删除
+     *
+     * @param id
+     */
+    @Override
+    public void delete(Long id) {
+        //查询serve信息
+        Serve serve = baseMapper.selectById(id);
+        if (ObjectUtil.isNull(serve)) {
+            throw new ForbiddenOperationException("不存在该区域服务");
+        }
+        //serve的sale_status是0草稿可以删除
+        Integer status = serve.getSaleStatus();
+        if (status != FoundationStatusEnum.INIT.getStatus()) {
+            throw new ForbiddenOperationException("区域服务的状态是上架不能删除");
+        }
+        LambdaQueryWrapper<Serve> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Serve::getId, id);
+        serveMapper.delete(queryWrapper);
     }
 }

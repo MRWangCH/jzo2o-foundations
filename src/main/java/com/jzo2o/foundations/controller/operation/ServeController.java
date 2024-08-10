@@ -51,4 +51,15 @@ public class ServeController {
         serveService.onSale(id);
     }
 
+    @ApiOperation("区域服务下架")
+    @PutMapping("/offSale/{id}")
+    public void offSale(@PathVariable("id") Long id) {
+        serveService.offSale(id);
+    }
+
+    @ApiOperation("区域服务删除")
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable("id") Long id) {
+        serveService.delete(id);
+    }
 }
