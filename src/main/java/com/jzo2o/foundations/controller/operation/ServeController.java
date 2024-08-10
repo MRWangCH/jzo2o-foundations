@@ -62,4 +62,16 @@ public class ServeController {
     public void delete(@PathVariable("id") Long id) {
         serveService.delete(id);
     }
+
+    @ApiOperation("区域服务设置热门")
+    @PutMapping("/onHot/{id}")
+    public void onHot(@PathVariable("id") Long id) {
+        serveService.onHot(id);
+    }
+
+    @ApiOperation("区域服务取消设置热门")
+    @PutMapping("/offHot/{id}")
+    public void offHot(@PathVariable("id") Long id) {
+        serveService.offHot(id);
+    }
 }

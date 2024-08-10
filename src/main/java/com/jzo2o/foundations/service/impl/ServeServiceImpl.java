@@ -186,4 +186,36 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
         queryWrapper.eq(Serve::getId, id);
         serveMapper.delete(queryWrapper);
     }
+
+    /**
+     * 区域服务设置热门
+     *
+     * @param id
+     */
+    @Override
+    public void onHot(Long id) {
+        Serve serve = baseMapper.selectById(id);
+        if (ObjectUtil.isNull(serve)) {
+            throw new ForbiddenOperationException("不存在该区域服务");
+        }
+        LambdaQueryWrapper<Serve> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Serve::getId, id);
+        serve.setIsHot(1);
+        serveMapper.update(serve, queryWrapper);
+    }
+
+    /**
+     * 区域服务取消设置热门
+     */
+    @Override
+    public void offHot(Long id) {
+        Serve serve = baseMapper.selectById(id);
+        if (ObjectUtil.isNull(serve)) {
+            throw new ForbiddenOperationException("不存在该区域服务");
+        }
+        LambdaQueryWrapper<Serve> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Serve::getId, id);
+        serve.setIsHot(0);
+        serveMapper.update(serve, queryWrapper);
+    }
 }
