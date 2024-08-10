@@ -45,4 +45,10 @@ public class ServeController {
         serveService.update(id, price);
     }
 
+    @ApiOperation("区域服务上架")
+    @PutMapping("/onSale/{id}")
+    public void onSale(@PathVariable("id") Long id) {
+        serveService.onSale(id);
+    }
+
 }

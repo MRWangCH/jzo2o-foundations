@@ -86,6 +86,7 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
 
     /**
      * 修改区域服务价格
+     *
      * @param id
      * @param price
      * @return
@@ -98,5 +99,39 @@ public class ServeServiceImpl extends ServiceImpl<ServeMapper, Serve> implements
         }
         Serve serve = baseMapper.selectById(id);
         return serve;
+    }
+
+    /**
+     * 区域服务的上架
+     *
+     * @param id
+     * @return
+     */
+    @Override
+    public Serve onSale(Long id) {
+        //查询serve信息
+        Serve serve = baseMapper.selectById(id);
+        if (ObjectUtil.isNull(serve)) {
+            throw new ForbiddenOperationException("不存在该区域服务");
+        }
+        //serve的sale_status是0或者1可以上架
+        Integer status = serve.getSaleStatus();
+        if (!(status == FoundationStatusEnum.INIT.getStatus() || status == FoundationStatusEnum.DISABLE.getStatus())) {
+            throw new ForbiddenOperationException("区域服务的状态是草稿或者下架时方可上架");
+        }
+        //服务项未启用不能上架
+        Long serveItemId = serve.getServeItemId();
+        ServeItem serveItem = serveItemMapper.selectById(serveItemId);
+        Integer activeStatus = serveItem.getActiveStatus();
+        if (activeStatus != FoundationStatusEnum.ENABLE.getStatus()) {
+            throw new ForbiddenOperationException("服务项未启用不能上架");
+        }
+        //更新sale_status
+        boolean update = lambdaUpdate().eq(Serve::getId, id).set(Serve::getSaleStatus, FoundationStatusEnum.ENABLE.getStatus()).update();
+        if (!update) {
+            throw new CommonException("服务上架失败");
+        }
+        Serve selectById = baseMapper.selectById(id);
+        return selectById;
     }
 }
